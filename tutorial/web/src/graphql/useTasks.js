@@ -19,7 +19,7 @@ const useTasks = (project) => {
 export default useTasks;
 
 function useAllTasksInProject(project) {
-  const { data, loading, error, updateQuery, refetch } = useQuery(
+  const { data, loading, error, refetch } = useQuery(
     gql`
       query GetAllTasksForProject($partition: String!) {
         tasks(query: { _partition: $partition }) {
@@ -34,23 +34,17 @@ function useAllTasksInProject(project) {
   if (error) {
     throw new Error(`Failed to fetch tasks: ${error.message}`);
   }
-  // const updateWithNewTask = (newTask) => {
-  //   newTask._id = newTask._id.toString();
-  //   updateQuery((prev) => {
-  //     return {
-  //       tasks: [...prev.tasks, newTask],
-  //     };
-  //   });
-  // };
-  // useWatchTasks(updateWithNewTask);
-  useTaskChanges(change => {
-    refetch();
+  
+  useWatchCollection({
+    db: "tracker",
+    collection: "Task",
+    onChange: refetch
   });
-  useDelayedInsert(project);
-
+  
   // If the query has finished, return the tasks from the result data
   // Otherwise, return an empty list
   const tasks = data?.tasks ?? [];
+  
   return { tasks, loading };
 }
 
@@ -64,33 +58,33 @@ function useCollection({ cluster="mongodb-atlas", db, collection }) {
   }, [currentUser]);
 }
 
-function useTaskChanges(onChange) {
-  const tasks = useCollection({ db: "tracker", collection: "Task"});
+function useWatchCollection({ cluster="mongodb-atlas", db, collection, onChange }) {
+  const coll = useCollection({ cluster, db, collection });
   React.useEffect(() => {
-    async function watchTasks() {
-      for await (const change of tasks.watch()) {
+    async function watch() {
+      for await (const change of coll.watch()) {
         onChange(change);
       }
     }
-    watchTasks();
-  })
+    watch();
+  }, [coll]);
 }
 
-function useDelayedInsert(project) {
-  const tasks = useCollection({ db: "tracker", collection: "Task"});
-  React.useEffect(() => {
-    async function insertDoodad() {
-      const r = await tasks.insertOne({
-        _id: new bson.ObjectId(),
-        _partition: project.partition,
-        name: `Hi from ${Date.now()}`,
-        status: "Open",
-      });
-      console.log("result", r);
-      return r;
-    }
-    setTimeout(() => {
-      insertDoodad();
-    }, 3000);
-  }, []);
-}
+// function useDelayedInsert(project) {
+//   const tasks = useCollection({ db: "tracker", collection: "Task" });
+//   React.useEffect(() => {
+//     async function insertDoodad() {
+//       const r = await tasks.insertOne({
+//         _id: new bson.ObjectId(),
+//         _partition: project.partition,
+//         name: `Hi from ${Date.now()}`,
+//         status: "Open",
+//       });
+//       console.log("result", r);
+//       return r;
+//     }
+//     setTimeout(() => {
+//       insertDoodad();
+//     }, 3000);
+//   }, []);
+// }
