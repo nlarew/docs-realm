@@ -7,7 +7,6 @@ import TextInput from "@leafygreen-ui/text-input";
 import LGCard from "./Card";
 import { uiColors } from "@leafygreen-ui/palette";
 import validator from "validator";
-import Loading from "./Loading";
 
 export default function LoginScreen() {
   const app = useRealmApp();
@@ -40,11 +39,12 @@ export default function LoginScreen() {
       // // TODO: Call the logIn() method and pass it the emailPassword credentials.
       // :hide-end:
     } catch (err) {
+      setIsLoggingIn(false);
       handleAuthenticationError(err, setError);
     }
   };
   // :code-block-end:
-
+  
   // :code-block-start: handleRegistrationAndLogin
   const handleRegistrationAndLogin = async () => {
     const isValidEmailAddress = validator.isEmail(email);
@@ -59,9 +59,11 @@ export default function LoginScreen() {
         // :hide-end:
         return await handleLogin();
       } catch (err) {
+        // setIsLoggingIn(false);
         handleAuthenticationError(err, setError);
       }
     } else {
+      setIsLoggingIn(false);
       setError((err) => ({ ...err, email: "Email is invalid." }));
     }
   };
@@ -69,9 +71,7 @@ export default function LoginScreen() {
 
   return (
     <Container>
-      {isLoggingIn ? (
-        <Loading />
-      ) : (
+      {(
         <Card>
           <LoginFormRow>
             <LoginHeading>
@@ -114,8 +114,8 @@ export default function LoginScreen() {
             />
           </LoginFormRow>
           {mode === "login" ? (
-            <Button variant="primary" onClick={() => handleLogin()}>
-              Log In
+            <Button variant="primary" onClick={() => handleLogin()} disabled={isLoggingIn}>
+              {isLoggingIn ? "Logging In" : "Log In"}
             </Button>
           ) : (
             <Button

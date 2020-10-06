@@ -64,7 +64,7 @@ const DeleteTaskMutation = gql`
 // :hide-end:
 // :code-block-end: 
 
-const TaskFieldsFragment = gql`
+export const TaskFieldsFragment = gql`
   fragment TaskFields on Task {
     _id
     _partition
