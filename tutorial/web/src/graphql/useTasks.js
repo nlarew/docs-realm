@@ -1,10 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
-import useTaskMutations, { TaskFieldsFragment } from "./useTaskMutations";
-import { useApolloClient } from "@apollo/client";
+import useTaskMutations from "./useTaskMutations";
 import { useRealmApp } from "../RealmApp";
-import bson from "bson";
 
 const useTasks = (project) => {
   const { tasks, loading } = useAllTasksInProject(project);
@@ -55,7 +53,7 @@ function useCollection({ cluster="mongodb-atlas", db, collection }) {
       .mongoClient(cluster)
       .db(db)
       .collection(collection);
-  }, [currentUser]);
+  }, [currentUser, cluster, db, collection]);
 }
 
 function useWatchCollection({ cluster="mongodb-atlas", db, collection, onChange }) {
@@ -67,24 +65,5 @@ function useWatchCollection({ cluster="mongodb-atlas", db, collection, onChange 
       }
     }
     watch();
-  }, [coll]);
+  }, [coll, onChange]);
 }
-
-// function useDelayedInsert(project) {
-//   const tasks = useCollection({ db: "tracker", collection: "Task" });
-//   React.useEffect(() => {
-//     async function insertDoodad() {
-//       const r = await tasks.insertOne({
-//         _id: new bson.ObjectId(),
-//         _partition: project.partition,
-//         name: `Hi from ${Date.now()}`,
-//         status: "Open",
-//       });
-//       console.log("result", r);
-//       return r;
-//     }
-//     setTimeout(() => {
-//       insertDoodad();
-//     }, 3000);
-//   }, []);
-// }
