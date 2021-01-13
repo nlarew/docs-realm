@@ -12,6 +12,7 @@ Realm SDKs
    Node.js SDK </node>
    React Native SDK </react-native>
    Web SDK </web>
+   MongoDB Realm Node.js SDK </sdk/node>
 
 The MongoDB Realm SDKs are client libraries that allow you to connect to local
 and synced Realm databases as well as authenticate users and interact with
