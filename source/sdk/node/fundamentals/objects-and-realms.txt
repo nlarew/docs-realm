@@ -11,3 +11,122 @@ Objects & Realms
    :backlinks: none
    :depth: 2
    :class: singlecol
+
+
+Realm Objects
+-------------
+
+{+service-short+} applications model data as objects composed of property-value
+pairs that each contain a specific type of data. :term:`{+service-short+}
+objects <{+service-short+} object>` are essentially the same as regular
+JavaScript objects, but they also include additional features like
+:ref:`real-time updates <node-live-object>`, reactive :ref:`change event
+handlers <node-client-notifications>`, and runtime data type validation.
+
+Every {+service-short+} object has an *object type* that refers to the object's
+class. Objects of the same type share an :ref:`object schema
+<node-object-schema>` that defines the properties and relationships of those
+objects.
+
+Realms
+------
+
+A **{+realm+}** is a set of related objects that conform to a defined schema and
+share user-level access permissions. Realms may contain more than one type of
+object as long as each type is represented in the schema.
+
+A {+realm+} allows you to partition data according to who
+uses it and when they use it. Every {+realm+} stores data in
+a separate :term:`{+realm+} file` that contains a binary
+encoding of each object in the {+realm+}. You can
+automatically :doc:`synchronize {+realm+} across multiple
+devices </sync>` and set up :ref:`reactive
+event handlers <node-realm-notifications>` that call a
+function any time an object in a {+realm+} is created,
+modified, or deleted.
+
+Comparison to Other Databases
+-----------------------------
+
+The {+service+} data model is similar to both relational and document
+databases but has distinct differences from both. To underscore these
+differences, it's helpful to highlight what a {+realm+} **is not**:
+
+A {+realm+} is not a single, application-wide database.
+    Unlike other applications, which store all of their data in a single
+    database, {+app+}s often split data across multiple {+realms+} to
+    organize data more efficiently and to enforce access controls.
+
+A {+realm+} is not a relational table.
+    Tables typically only store one kind of information, such as street
+    addresses or items in a store inventory, whereas a {+realm+} can contain
+    any number of object types.
+
+A {+realm+} is not a collection of schemaless documents.
+    Application objects are similar to documents, but every object in a
+    {+realm+} conforms to a defined schema for its object type. An object
+    cannot contain a field that is not described by its schema.
+
+.. _node-object-schema:
+
+Object Schema
+-------------
+
+An **object schema** is a configuration object that defines the fields,
+relationships of a {+service-short+} object type. {+service-short+} client applications
+define object schemas with the native class implementation in their
+respective language using the :term:`{+frontend-schema+}`.
+
+Object schemas specify constraints on object properties such as the data
+type of each property, whether or not a property is required, and the
+default value for optional properties. Schemas can also define
+:ref:`relationships <node-client-relationships>` between object types in
+a {+realm+}.
+
+Every {+app+} has a :ref:`{+backend-schema+} <node-realm-schema>`
+composed of a list of object schemas for each type of object that the
+{+realms+} in that application may contain.
+
+{+service+} guarantees that all objects in a {+realm+} conform to the
+schema for their object type and validates objects whenever they're
+created, modified, or deleted.
+
+.. example::
+
+   The following code block shows an object schema that describes a Dog.
+   Every Dog object must include a ``name`` and ``age`` and may
+   optionally include the dog's ``breed`` and a reference to a Person
+   object that represents the dog's ``owner``.
+
+   .. tabs-realm-languages::
+
+      .. tab::
+          :tabid: javascript
+
+          .. literalinclude:: /examples/Schemas/DogSchema.js
+              :language: javascript
+
+.. _node-property-schema:
+
+Property Schema
+---------------
+
+.. include:: /node/include/property-schema.rst
+
+.. _node-primary-key:
+
+Primary Keys
+------------
+
+A **primary key** is a String or Integer property that uniquely
+identifies an object. You may optionally define a primary key for an
+object type as part of the :ref:`object schema <node-object-schema>`.
+{+client-database+} automatically indexes primary key properties, which
+allows you to efficiently read and modify objects based on their primary
+key.
+
+If an object type has a primary key, then all objects of that type must
+include the primary key property with a value that is unique among
+objects of the same type in a {+realm+}. You cannot change the primary
+key property for an object type after any object of that type is added
+to a {+realm+}.
