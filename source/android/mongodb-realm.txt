@@ -15,7 +15,7 @@ MongoDB Realm
    Work with Multiple Users </android/work-with-multiple-users>
    Link User Identities </android/link-identities>
    Sync Data </android/sync-data>
-   Remotely Access MongoDB </android/mongodb>
+   Remotely Access MongoDB </android/mangodb>
    Call a Function </android/call-a-function>
 
 - :doc:`Initialize the Realm App Client </android/init-realmclient>`
