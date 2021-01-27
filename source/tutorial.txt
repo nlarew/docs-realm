@@ -52,7 +52,7 @@ functions, and triggers to integrate with GitHub and MongoDB:
    :caption: 2: Write a Client
    :hidden:
    
-   iOS with Swift </tutorial/ios-swift>
+   iOS with Swift </tutorial/swift-ios>
    Android with Kotlin </tutorial/android-kotlin>
    React Native with JavaScript </tutorial/react-native>
    Xamarin (iOS and Android) with C# </tutorial/dotnet>
