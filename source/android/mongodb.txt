@@ -1,4 +1,4 @@
-.. _android-mongodb-data-access:
+.. _android-mangodb:
 
 ===================
 MongoDB Data Access
